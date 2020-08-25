@@ -7,6 +7,12 @@ const vm = new Vue({
   data: {
     users: [],          // include myself
     messages: [],
+    colabora: {
+      enabled: false,
+      input: false,
+      text: "",
+      badges: []
+    },
     local_stream: null, // myself
     local_screen: null, // screen share stream
     skyway: {
@@ -265,6 +271,10 @@ const vm = new Vue({
       dtr(`on_select_recognition:`);
       jQuery('#modal-recognition').modal({show:true, backdrop:'static'});
     },
+    on_select_colabora: function () {
+      dtr(`on_select_colabora:`);
+      this.colabora.enabled = !this.colabora.enabled
+    },
     on_hidden_recognition_modal: function() {
       dtr('on_hidden_recognition_modal');
       this.stop_recognition();
@@ -275,6 +285,10 @@ const vm = new Vue({
     start_recognition: function() {
       dtr('start_recognition');
       dtr('lang', this.feature.lang);
+
+      this.colabora.text = ""
+
+      if (!this.colabora.enabled) return
 
       this.transcription.recognizer = new webkitSpeechRecognition();
       // this.transcription.recognizer.continuous = true;
@@ -292,7 +306,7 @@ const vm = new Vue({
 
       this.transcription.recognizer.onerror = (event) => {
          dtr("recognition.onerror", event);
-         this.transcription.message = null;
+        //  this.transcription.message = "";
       }
 
       this.transcription.recognizer.onresult = (event) => {
@@ -300,47 +314,20 @@ const vm = new Vue({
         const result = event.results[event.resultIndex];
         const isFinal = result.isFinal;
         const text = result[0].transcript;
-        if (this.transcription.message) {
-          this.transcription.message.text = text;
-          if (isFinal) {
-            this.transcription.message.unresolved = false;
-            if (this.skyway.room) {
-              this.skyway.room.send({ command: "speechRecognition", data: this.transcription.message})
-            }
-            // {
-            //   // debug code
-            //   // this.speech_message(this.transcription.message);
-            // }
-            if (this.debug.self_translation) {
-              this.translate_message(this.transcription.message, this.feature.lang, this.feature.lang == "ja-JP" ? "en-US" : "ja-JP");
-            }
-            this.transcription.message = null;
-          }
-        }
-        else {
-          this.transcription.message = new Object();
-          this.transcription.message = {
-            text: text,
-            lang: this.feature.lang,
-            unresolved: true
-          };
-          this.add_message(this.transcription.message);
-        }
+
+        this.colabora.text = text
+        console.log(this.colabora.text)
       }
       this.transcription.recognizer.onend = () => {
         dtr(`recognition.onend:`);
-
-        if (this.transcription.message && this.transcription.message.unresolved) {
-          // this.messages.shift();
-          this.transcription.message = null;
-        }
-
-        if (this.feature.transcription && this.transcription.recognizer && !this.transcription.pause) {
-          this.transcription.recognizer.start();
-        }
       }
       this.transcription.pause = false;
       this.transcription.recognizer.start();
+    },
+    getRandomInt: function(min, max) {
+      min = Math.ceil(min);
+      max = Math.floor(max);
+      return Math.floor(Math.random() * (max - min)) + min; //The maximum is exclusive and the minimum is inclusive
     },
     stop_recognition: function() {
       dtr('stop_recognition');
@@ -348,6 +335,28 @@ const vm = new Vue({
         this.transcription.recognizer.stop();
       }
       this.transcription.recognizer = null;
+
+      if (this.colabora.text == "") return
+
+      let badge = {
+        text: "" + this.colabora.text,
+        style: {}
+      }
+      const badge_color = [
+        "badge-primary",
+        "badge-secondary",
+        "badge-success",
+        "badge-danger",
+        "badge-warning",
+        "badge-info",
+        "badge-light",
+        "badge-dark"
+      ]
+      badge.color = badge_color[this.getRandomInt(0,8)]
+      badge.style.top = this.getRandomInt(50, window.innerHeight - 50) + "px"
+      badge.style.left = this.getRandomInt(50, window.innerWidth - 50) + "px"
+
+      this.colabora.badges.push(badge)
     },
     on_pause_recognition: function(pause) {
       dtr('on_pause_recognition', pause);
@@ -1087,6 +1096,34 @@ const vm = new Vue({
     selectable_audio_codecs: function (codecs) {
       return this.is_firefox ? codecs.filter(codec => codec.value != "ISAC") : codecs
     },
+    init_keyhook: function() {
+
+      document.addEventListener('keydown', (event) => {
+        if (event.key == "Control") {
+          console.log(`keydown`);
+          this.colabora.input = true
+          this.start_recognition()
+        }
+      });
+
+      document.addEventListener('keyup', (event) => {
+        if (event.key == "Control") {
+          console.log(`keyup`);
+          this.colabora.input = false
+          this.stop_recognition()
+        }
+      });
+    },
+    // styleBadge: function (badge) {
+    //   console.log(badge)
+    //   return { badge.exstyle: true}
+    //   if (badge.exstyle == "primary") {
+    //     return { "badge-primary": true }
+    //   }
+    //   if (badge.exstyle == "secondary") {
+    //     return { "badge-secondary": true }
+    //   }
+    // },
   },
   computed: {
     rendererUsers: function () {
@@ -1140,6 +1177,8 @@ const vm = new Vue({
   },
   mounted: function () {
     dtr(`mounted`)
+
+    this.init_keyhook()
 
     let welcomeDialog = true
 

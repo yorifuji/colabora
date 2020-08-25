@@ -67,6 +67,32 @@
       [v-cloak] {
         display: none;
       }
+      .colabora-container {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        z-index: 10;
+      }
+      .colabora-input {
+        position: absolute;
+        /* font-size: 100%; */
+        /* width: 200px; */
+        z-index: 11;
+        top: 10px;
+        /* width: 50%; */
+        opacity: 50%;
+        font-weight: bold;
+        color: red;
+        text-align: center;
+      }
+      .colabora-badge {
+        position: absolute;
+        font-size: 120%;
+        z-index: 11;
+      }
     </style>
   </head>
   <body>
@@ -78,6 +104,17 @@
         <div class="video-frame" v-for="user in rendererUsers" :style="user.style">
           <video v-videostream="user.stream" :class="styleCover" @click="on_click_video(user.stream)" muted autoplay playsinline></video>
           <audio v-audiostream="user.stream"></audio>
+        </div>
+        <div class="colabora-container" :class="{invisible : !colabora.enabled }" v-cloak>
+          <input class="form-control form-control-lg colabora-input" type="text" v-model="colabora.text" :class="{invisible : !colabora.input }">
+          <!-- <span class="badge badge-primary colabora-badge" style="top:100px;left:100px">デジタルトランスフォーメーション</span>
+          <span class="badge badge-primary colabora-badge" style="top:700px;left:500px">アーリーアダプター</span> -->
+          <span class="badge colabora-badge"
+            v-for="badge in colabora.badges"
+            :class="badge.color"
+            :style="badge.style">
+            {{ badge.text }}
+          </span>
         </div>
       </div>
       <nav class="navbar fixed-bottom navbar-expand-md navbar-dark bg-dark">
@@ -134,9 +171,10 @@
               </div>
             </li>
             <li class="nav-item dropup">
-              <span class="nav-link dropdown-toggle" id="dropdown_share" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" :class="{disabled : is_recvonly}" v-cloak>{{ resource.text.experimental }}</span>
+              <span class="nav-link dropdown-toggle" id="dropdown_experimental" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" :class="{disabled : is_recvonly}" v-cloak>{{ resource.text.experimental }}</span>
               <div class="dropdown-menu" aria-labelledby="dropdown_layout">
-                <button type="button" class="dropdown-item" @click="on_select_recognition()">{{ resource.text.voice_recognition }}</button>
+                <!-- <button type="button" class="dropdown-item" @click="on_select_recognition()">{{ resource.text.voice_recognition }}</button> -->
+                <button type="button" class="dropdown-item" @click="on_select_colabora()" :class="{active : colabora.enabled}" >{{ resource.text.colabora }}</button>
               </div>
             </li>
           </ul>
@@ -309,6 +347,9 @@
         $(".container").height(window.innerHeight - $(".navbar").outerHeight());
         $(".text-container").width(0.25 * window.innerWidth);
         $(".text-container").height(window.innerHeight - $(".navbar").outerHeight());
+        $(".colabora-input").width(0.4 * window.innerWidth);
+        var plusPxW = ((window.innerWidth - 0.4 * window.innerWidth)/2);
+        $('.colabora-input').css({'left': plusPxW + "px"});
         vm.update_video_layout()
       });
     </script>

@@ -111,7 +111,8 @@ const consts = {
         "call": "呼び出し",
         "input_room": "ルーム名を入力",
         "input_peer": "PeerIDを入力",
-        "OverconstrainedError" : "カメラが指定のフォーマットに対応していません"
+        "OverconstrainedError" : "カメラが指定のフォーマットに対応していません",
+        "colabora" : "コラボラ"
       },
       en : {
         "welcome": "Welcome",
@@ -145,7 +146,8 @@ const consts = {
         "call": "Call",
         "input_room": "Input Room Name",
         "input_peer": "Input Peer ID",
-        "OverconstrainedError" : "The camera does not support the specified format"
+        "OverconstrainedError" : "The camera does not support the specified format",
+        "colabora" : "Colabora"
       }
     }
   }
