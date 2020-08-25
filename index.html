@@ -107,8 +107,6 @@
         </div>
         <div class="colabora-container" :class="{invisible : !colabora.enabled }" v-cloak>
           <input class="form-control form-control-lg colabora-input" type="text" v-model="colabora.text" :class="{invisible : !colabora.input }">
-          <!-- <span class="badge badge-primary colabora-badge" style="top:100px;left:100px">デジタルトランスフォーメーション</span>
-          <span class="badge badge-primary colabora-badge" style="top:700px;left:500px">アーリーアダプター</span> -->
           <span class="badge colabora-badge"
             v-for="badge in colabora.badges"
             :class="badge.color"

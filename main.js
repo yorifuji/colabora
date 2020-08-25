@@ -353,8 +353,8 @@ const vm = new Vue({
         "badge-dark"
       ]
       badge.color = badge_color[this.getRandomInt(0,8)]
-      badge.style.top = this.getRandomInt(50, window.innerHeight - 50) + "px"
-      badge.style.left = this.getRandomInt(50, window.innerWidth - 50) + "px"
+      badge.style.left = this.getRandomInt(50, $(".colabora-container").outerWidth() - 150) + "px"
+      badge.style.top = this.getRandomInt(50, $(".colabora-container").outerHeight() - 100) + "px"
 
       this.colabora.badges.push(badge)
     },
