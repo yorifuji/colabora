@@ -357,6 +357,10 @@ const vm = new Vue({
       badge.style.top = this.getRandomInt(50, $(".colabora-container").outerHeight() - 100) + "px"
 
       this.colabora.badges.push(badge)
+      if (this.skyway.room) {
+        this.skyway.room.send({ command: "colabora-badge", data: badge})
+      }
+
     },
     on_pause_recognition: function(pause) {
       dtr('on_pause_recognition', pause);
@@ -831,6 +835,10 @@ const vm = new Vue({
           if (this.feature.translation) {
             this.translate_message(message, message.lang, this.feature.lang);
           }
+        }
+        else if (recv_data.command == "colabora-badge") {
+          const badge = recv_data.data;
+          this.colabora.badges = [...this.colabora.badges, badge]
         }
       });
 
