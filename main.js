@@ -289,8 +289,9 @@ const vm = new Vue({
       this.colabora.text = ""
 
       if (!this.colabora.enabled) return
+      if (this.transcription.recognizer) return
 
-      this.transcription.recognizer = new webkitSpeechRecognition();
+      this.transcription.recognizer = new webkitSpeechRecognition()
       // this.transcription.recognizer.continuous = true;
       this.transcription.recognizer.interimResults = true;
       this.transcription.recognizer.lang = this.feature.lang;
