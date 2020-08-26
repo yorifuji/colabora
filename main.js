@@ -12,15 +12,15 @@ const vm = new Vue({
       input: false,
       text: "",
       badges: [
-        {
-          text: "test",
-          color: "badge-primary",
-          style: {
-            left: "100px",
-            top: "100px"
-          },
-          id: (new MediaStream).id
-        }
+        // {
+        //   text: "test",
+        //   color: "badge-primary",
+        //   style: {
+        //     left: "100px",
+        //     top: "100px"
+        //   },
+        //   id: (new MediaStream).id
+        // }
       ],
       badge_move: null
     },
