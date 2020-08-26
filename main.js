@@ -11,7 +11,18 @@ const vm = new Vue({
       enabled: true,
       input: false,
       text: "",
-      badges: []
+      badges: [
+        {
+          text: "test",
+          color: "badge-primary",
+          style: {
+            left: "100px",
+            top: "100px"
+          },
+          id: (new MediaStream).id
+        }
+      ],
+      badge_move: null
     },
     local_stream: null, // myself
     local_screen: null, // screen share stream
@@ -340,6 +351,7 @@ const vm = new Vue({
       if (this.colabora.text == "") return
 
       let badge = {
+        id: (new MediaStream).id,
         text: "" + this.colabora.text,
         style: {}
       }
@@ -839,6 +851,9 @@ const vm = new Vue({
         }
         else if (recv_data.command == "colabora-badge") {
           const badge = recv_data.data;
+          this.colabora.badges = this.colabora.badges.map(b => {
+            return (b.id == badge.id) ? badge : b
+          })
           this.colabora.badges = [...this.colabora.badges, badge]
         }
       });
@@ -1123,6 +1138,31 @@ const vm = new Vue({
         }
       });
     },
+    on_click_badge: function(badge, event) {
+      console.log(event)
+      console.log(badge)
+      if (this.colabora.badge_move == badge) {
+        this.colabora.badge_move = null
+      }
+      else {
+        this.colabora.badge_move = badge
+      }
+      console.log(this.colabora.badge_move)
+    },
+    on_click_colabora_container: function(event) {
+      console.log(`on_click_colabora_container:`)
+      console.log(event.offsetX, event.offsetY)
+      const badge = this.colabora.badge_move
+      if (badge == null) return
+      this.colabora.badge_move = null
+      badge.style = {
+        left: event.offsetX + "px",
+        top: event.offsetY + "px"
+      }
+      if (this.skyway.room) {
+        this.skyway.room.send({ command: "colabora-badge", data: badge})
+      }
+    }
     // styleBadge: function (badge) {
     //   console.log(badge)
     //   return { badge.exstyle: true}

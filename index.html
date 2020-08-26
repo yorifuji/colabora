@@ -99,6 +99,9 @@
         -ms-user-select: none;
         user-select: none;
       }
+      .colabora-badge-move {
+        color: red;
+      }
     </style>
   </head>
   <body>
@@ -111,12 +114,13 @@
           <video v-videostream="user.stream" :class="styleCover" @click="on_click_video(user.stream)" muted autoplay playsinline></video>
           <audio v-audiostream="user.stream"></audio>
         </div>
-        <div class="colabora-container" :class="{invisible : !colabora.enabled }" v-cloak>
+        <div class="colabora-container" :class="{invisible : !colabora.enabled }" v-cloak @click="on_click_colabora_container">
           <input class="form-control form-control-lg colabora-input" type="text" v-model="colabora.text" :class="{invisible : !colabora.input }">
           <span class="badge colabora-badge"
             v-for="badge in colabora.badges"
-            :class="badge.color"
-            :style="badge.style">
+            :class="[badge.color, {'colabora-badge-move': badge == colabora.badge_move}]"
+            :style="badge.style"
+            @click.stop="on_click_badge(badge, $event)">
             {{ badge.text }}
           </span>
         </div>
