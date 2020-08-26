@@ -17,7 +17,7 @@ WebRTCを使ったビデオ通話アプリです。
 
 # デモ
 
-https://yorifuji.github.io/seaside/
+https://yorifuji.github.io/colabora/
 
 Chrome@macOS で動作確認しています。
 
