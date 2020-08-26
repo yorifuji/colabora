@@ -8,7 +8,7 @@ const vm = new Vue({
     users: [],          // include myself
     messages: [],
     colabora: {
-      enabled: false,
+      enabled: true,
       input: false,
       text: "",
       badges: []
