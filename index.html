@@ -148,6 +148,7 @@
               <span class="nav-link dropdown-toggle" id="dropdown_microphone" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" :class="{disabled : !has_microphone || is_recvonly}" v-cloak>{{ resource.text.microphone }}</span>
               <div class="dropdown-menu" aria-labelledby="dropdown_microphone">
                 <button type="button" class="dropdown-item" :class="{active : microphone.mute}" @click="on_select_microphone_mute()">{{ resource.text.mute }}</button>
+                <button type="button" class="dropdown-item" :class="{active : colabora.mute_mic_automatically}" @click="on_select_microphone_mute_colabora()">{{ resource.text.mute_colabora }}</button>
                 <div class="dropdown-divider"></div>
                 <button type="button" class="dropdown-item" v-for="mic in microphone.device" :class="{active : microphone.using && microphone.using.deviceId == mic.deviceId}" @click="on_select_microphone(mic)">{{ mic.label }}</button>
               </div>

@@ -22,7 +22,8 @@ const vm = new Vue({
         //   id: (new MediaStream).id
         // }
       ],
-      badge_move: null
+      badge_move: null,
+      mute_mic_automatically: true
     },
     local_stream: null, // myself
     local_screen: null, // screen share stream
@@ -194,6 +195,10 @@ const vm = new Vue({
     on_select_microphone_mute: function () {
       dtr(`on_select_microphone_mute`)
       this.microphone.mute = !this.microphone.mute;
+    },
+    on_select_microphone_mute_colabora: function () {
+      dtr(`on_select_microphone_mute`)
+      this.colabora.mute_mic_automatically = !this.colabora.mute_mic_automatically
       // replace stream
       if (this.skyway.call) {
         this.skyway.call.replaceStream(this.get_localstream_outbound());
@@ -957,6 +962,9 @@ const vm = new Vue({
       if (this.microphone.mute) {
         outbound_stream.addTrack(this.get_silent_audio_track());
       }
+      else if (this.colabora.mute_mic_automatically && this.colabora.input) {
+        outbound_stream.addTrack(this.get_silent_audio_track());
+      }
       else {
         if (this.local_stream.getAudioTracks().length) {
           outbound_stream.addTrack(this.local_stream.getAudioTracks()[0]);
@@ -1126,6 +1134,15 @@ const vm = new Vue({
           console.log(`keydown`);
           this.colabora.input = true
           this.start_recognition()
+          // mute automatically
+          if (this.colabora.mute_mic_automatically) {
+            if (this.skyway.call) {
+              this.skyway.call.replaceStream(this.get_localstream_outbound());
+            }
+            else if (this.skyway.room) {
+              this.skyway.room.replaceStream(this.get_localstream_outbound());
+            }
+          }
         }
       });
 
@@ -1134,6 +1151,15 @@ const vm = new Vue({
           console.log(`keyup`);
           this.colabora.input = false
           this.stop_recognition()
+          // unmute automatically
+          if (this.colabora.mute_mic_automatically) {
+            if (this.skyway.call) {
+              this.skyway.call.replaceStream(this.get_localstream_outbound());
+            }
+            else if (this.skyway.room) {
+              this.skyway.room.replaceStream(this.get_localstream_outbound());
+            }
+          }
         }
       });
     },
