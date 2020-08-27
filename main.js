@@ -297,10 +297,10 @@ const vm = new Vue({
       dtr('start_recognition');
       dtr('lang', this.feature.lang);
 
-      this.colabora.text = ""
-
       if (!this.colabora.enabled) return
       if (this.transcription.recognizer) return
+
+      this.colabora.text = ""
 
       this.transcription.recognizer = new webkitSpeechRecognition()
       // this.transcription.recognizer.continuous = true;
@@ -373,7 +373,6 @@ const vm = new Vue({
       if (this.skyway.room) {
         this.skyway.room.send({ command: "colabora-badge", data: badge})
       }
-
     },
     on_pause_recognition: function(pause) {
       dtr('on_pause_recognition', pause);
@@ -1139,15 +1138,12 @@ const vm = new Vue({
       });
     },
     on_click_badge: function(badge, event) {
-      console.log(event)
-      console.log(badge)
       if (this.colabora.badge_move == badge) {
         this.colabora.badge_move = null
       }
       else {
         this.colabora.badge_move = badge
       }
-      console.log(this.colabora.badge_move)
     },
     on_click_colabora_container: function(event) {
       console.log(`on_click_colabora_container:`)
@@ -1267,7 +1263,7 @@ const vm = new Vue({
       dtr(`search`, search)
       search.split("&").forEach(query => {
         const [key, value] = query.split("=")
-        if (key == "welcomeDialog" && ["true", "false"].includes(value)) {
+        if (["welcomeDialog", "showWelcome"].includes(key) && ["true", "false"].includes(value)) {
           welcomeDialog = value == "true" ? true : false
         }
         else if (key == "mode") {
